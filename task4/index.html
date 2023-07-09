@@ -32,7 +32,7 @@
                     <tr ng-repeat="show in List track by $index" ng-show="showRow($index)">
                         <td>{{show.text}}</td>
                         <td>{{show.time | date:"mediumTime"}}</td>
-                        <td><button id="remove" ng-click="remove($index)">REMOVE</button></td>
+                        <td><button id="remove" ng-click="remove($index)">DELETE</button></td>
                         <td><button id="edit" ng-click="edit($index)">EDIT</button></td> 
                     </tr>
                 </tbody>
