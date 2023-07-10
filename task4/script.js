@@ -42,8 +42,4 @@ myApp.controller("myController",function($scope){
             alert("THERE IS NOTHING TO EDIT")
         }
     }
-    // const button = document.getElementById("myButton");
-    //     button.addEventListener('click', () => {
-    //         document.body.classList.toggle("darkmode");
-    // });
 });
