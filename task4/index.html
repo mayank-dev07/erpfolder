@@ -8,8 +8,11 @@
 <script src="angular/angular.js"></script>
 <script src="script.js"></script>
 <link rel="stylesheet" href="style.css">
+</head>
 <body ng-app="myModule" ng-controller="myController"> 
-    <div class="heading">
+    <body>
+        <!-- <button id="myButton">CHANGE THEME</button> -->
+     <div class="heading">
         <h1>TO DO LIST</h1>
     </div>
     <div class="elements">
@@ -24,12 +27,14 @@
             <table>
                 <thead>
                     <tr>
+                        <th>STATUS</th>
                         <th>THINGS TO DO</th>
                         <th id="time">TIME</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="show in List track by $index" ng-show="showRow($index)">
+                        <td><button id="complete" ng-click="complete($index)">COMPLETED</button></td>
                         <td>{{show.text}}</td>
                         <td>{{show.time | date:"mediumTime"}}</td>
                         <td><button id="remove" ng-click="remove($index)">DELETE</button></td>
@@ -41,7 +46,8 @@
     </div>
     <div class="templete">
         <img src="project-management-goal-completion-list-questionnaire-survey-answering-business-organization-tool_335657-3289.avif" alt="">
-    </div>
-</div>   
+    </div> 
+
+    </div> 
 </body>
 </html>

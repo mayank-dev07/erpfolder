@@ -16,15 +16,21 @@ myApp.controller("myController",function($scope){
             localStorage.setItem("data",JSON.stringify($scope.List));
         }
     }
-
+    
     $scope.remove = function(index){
         $scope.List[index].status = "removed";
         localStorage.setItem("data",JSON.stringify($scope.List));  
     }
+
+    $scope.complete = function(index){
+        $scope.List[index].status = "completed";
+        localStorage.setItem("data",JSON.stringify($scope.List));  
+    }
+
     $scope.showRow = function (index) {
         return $scope.List[index].status == "added";
-      };
-      
+    };
+    
     $scope.edit=function(index){
         if($scope.newTodo){
             $scope.List[index].text = $scope.newTodo;
@@ -36,5 +42,8 @@ myApp.controller("myController",function($scope){
             alert("THERE IS NOTHING TO EDIT")
         }
     }
+    // const button = document.getElementById("myButton");
+    //     button.addEventListener('click', () => {
+    //         document.body.classList.toggle("darkmode");
+    // });
 });
-
