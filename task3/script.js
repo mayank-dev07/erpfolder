@@ -6,6 +6,7 @@ window.onload=()=>{
   }
 }
 
+
 var stored = [];
 getdata();
 async function getdata() {
