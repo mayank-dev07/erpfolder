@@ -35,7 +35,7 @@ myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $
   $urlRouterProvider.otherwise('/login');
 }]);
 
-const apiUrl = "http://10.21.81.205:8000"
+const apiUrl = "https://10.21.81.205:8000"
 
 myApp.controller('registerController', function($scope, $http, $location) {
   $scope.registeration = function (){
