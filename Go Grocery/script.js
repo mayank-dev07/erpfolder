@@ -42,6 +42,11 @@ myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $
     templateUrl: 'displayProducts.html',
     controller: 'displayProductController'
   })
+  .state('editSection',{
+    url: '/editSection',
+    templateUrl: 'editSection.html',
+    controller: 'editSectionController'
+  })
   $urlRouterProvider.otherwise('/login');
 }]);
 
@@ -153,10 +158,11 @@ myApp.controller('sectionController', ['$scope', '$http', '$location', function(
       .catch(function(error) {
         console.error('Error uploading data:', error);
       });
+      $location.path('/manager');
     };
 
     $scope.back = function(){
-      $location.path('/manager')
+    $location.path('/manager');
     }
   }]);
   
@@ -178,97 +184,164 @@ myApp.controller('sectionController', ['$scope', '$http', '$location', function(
     };
   }]);
   
-  myApp.controller('managerController', ['$scope', '$http', '$location', function($scope, $http, $location) {
-    $scope.sections = [];
+ 
+  myApp.service('sharedDataService', function() {
+    var sectionId;
+
+    this.setSectionId = function(id) {
+        sectionId = id;
+    };
+
+    this.getSectionId = function() {
+        return sectionId;
+    };
+});
+
+
+  myApp.controller('managerController', ['$scope', '$http', '$location','$window','sharedDataService', function($scope, $http, $location, $window,sharedDataService) {
     $http.get(apiUrl + '/section', {withCredentials: true})
     
 	  .then(function(response){
+      $scope.sections = [];
       console.log(response);
       let sectionDetails = response.data;
       $scope.sections = sectionDetails;
-      $window.alert("section added successfully");
+      console.log($scope.sections)
     })
 
 	  .catch(function(error){
-      if(error.data.message){
-        $window.alert(error.data.message)
-      }
-      else{
-        $window.alert("there is an error")
-      }
+      console.log(error)
 	 })
 
-   $scope.showProducts = function(sectionId) {
-    $location.path('/displayProducts' + sectionId);
-  };
+      $scope.deleteSection = function(sectionId){
+        let data = {
+          name: sectionId
+        }
+        console.log(data)
+        $http.post(apiUrl + '/deletesection', data, {withCredentials: true})
 
-    $scope.products = function(){
-    $location.path('/products')
-   } 
+        .then(function(response){
+          console.log(response)
+          $window.alert(response.data.message)
+        })
+        .catch(function(error){
+          console.log(error)
+        })
+      } 
+        
+      $scope.addProduct = function(sectionId) {
+        sharedDataService.setSectionId(sectionId);
+        console.log(sectionId)
+        $location.path('/products');
+    };
+    
 
-    $scope.addSection = function(){
-      $location.path('/section')
-    }
+          $scope.addSection = function(){
+          $location.path('/section')
+        }
+
+          $scope.editSection = function(sectionId){
+            // let data = {
+            //   id: sectionId
+            // }
+            // console.log(data)
+            // $http.post(apiUrl + '/editsection', data, {withCredentials: true})
+
+            // .then(function(response){
+            //   console.log(response)
+            //   $location.path('/editSection')
+            // })
+            // .catch(function(error){
+            //   console.log(error)
+            // })
+        }
+  }]);
+
+
+  myApp.controller('productController',['$scope', '$http','$location','sharedDataService',function($scope,$http,$location,sharedDataService){
+     
+    $scope.submitForm = function() {
+      var sectionId = sharedDataService.getSectionId();
+      var file = $scope.formData.image;
+      var name = $scope.formData.name;
+      var price = $scope.formData.price;
+      var mfd = formatDate($scope.formData.mfd);
+      var exp = formatDate($scope.formData.exp);
+      // var description = $scope.formData.description;
+      
+      var formData = new FormData();
+      formData.append('productImage', file);  
+      formData.append('product', name);
+      formData.append('id', sectionId);
+      formData.append('price', price);
+      formData.append('mfdate', mfd);
+      formData.append('expdate', exp);
+      // formData.append('productDescription', description);
+      console.log(formData)
+      
+      $http.post(apiUrl + "/product", formData, {
+        transformRequest: angular.identity,
+        headers: { 'Content-Type': undefined },
+        withCredentials: true
+      })
+      .then(function(response) {
+        console.log('Data uploaded successfully');
+        console.log(response)
+        $location.path('/manager');
+      })
+      .catch(function(error) {
+        console.error('Error uploading data:', error);
+      });
+    };   
+    function formatDate(dateString) {
+      var date = new Date(dateString);
+      var year = date.getFullYear();
+      var month = String(date.getMonth() + 1).padStart(2, '0');
+      var day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } 
+
+    $scope.back = function(){
+      $location.path('/manager');
+      }
+
   }]);
   
-  myApp.controller('displayProductController', ['$scope', '$http', '$location', function($scope, $http, $location) {
-    
-    $scope.products = [];
-    $http.get(apiUrl + "/product",{
-    withCredentials: true
-    })
+myApp.controller('displayProductController', ['$scope', '$http',  '$window', function($scope, $http,$window) {
+    // var sectionId =sectionId;
 
-    .then(function(response){
-    console.log(response);
-    let productDetails = response.data;
-    console.log(productDetails)
-    $scope.products = productDetails;
-    $window.alert("product added successfully");
-    })
-
-    .catch(function(error){
-    if(error.data.message){
-    $window.alert(error.data.message)
-    }
-    else{
-    $window.alert("there is an error")
-    }
-  })
-
-    $scope.products = function(){
-    $location.path('/products')
-  } 
+    // $scope.products = [];
+    // $http.get(apiUrl + '/product', { withCredentials: true })
+    //     .then(function(response) {
+    //         $scope.products = response.data;
+    //         console.log($scope.products);
+    //     })
+    //     .catch(function(error) {
+    //         console.log(error);
+    //         $window.alert("Error fetching products");
+    //     });
 }]);
 
+  
+myApp.controller('editSectionController', ['$scope', '$http', '$location', '$window', function($scope, $http, $location, $window) {
+  
+  $scope.submitForm = function(){
+    let edit = {
+      name: $scope.formData.name,
+      image: $scope.formData.image 
+    }
 
-    myApp.controller('productController',['$scope',function($scope){
-       
-      $scope.submitForm = function() {
-        var name = $scope.formData.name;
-        var price = $scope.formData.price;
-        var description = $scope.formData.description;
-        var file = $scope.formData.image;
-        
-        var formData = new FormData();
-        formData.append('productImage', file);  
-        formData.append('productName', name);
-        formData.append('productPrice', price);
-        formData.append('productDescription', description);
-        
-        $http.post(apiUrl + "/product", formData, {
-          transformRequest: angular.identity,
-          headers: { 'Content-Type': undefined },
-          withCredentials: true
-        })
-        .then(function(response) {
-          console.log('Data uploaded successfully');
-          console.log(response)
-        })
-        .catch(function(error) {
-          console.error('Error uploading data:', error);
-        });
-      };    }]);
-    
+    console.log(edit)
+    $http.post(apiUrl + '/editsection' , edit , {withCredentials: true})
+    .then(function(response){
+      console.log(response)
+    })
+  }
+
+  $scope.back = function(){
+    $location.path('/manager')
+  }
+}]); 
   
 // myApp.controller('mainController', ['$scope', function($scope) {
 //     $scope.products = [
@@ -302,39 +375,79 @@ myApp.controller('sectionController', ['$scope', '$http', '$location', function(
 // }]);
 
 
-    myApp.controller('mainController', ['$scope', '$http', '$location', function($scope, $http, $location) {
-      
-    //    $scope.logout = function(){
-    //   $http.get("/") 
-    //   .then(function(response){
-    //     console.log(response)
-    //     $location.path('/login')
-    //   })
-    // }
+    myApp.controller('mainController', ['$scope', '$http', '$location','$state', function($scope, $http, $location,$state) {
+      $scope.products=[];
+      $http.get(apiUrl + '/product', {withCredentials : true})
+      .then(function(response){
+        console.log(response)
+        $scope.products = response.data;
+        console.log($scope.products)
+      })
+      .catch(function(error){
+        console.log(error)
+      })
 
       $scope.Modal = false;
   
-      $scope.details = function(name, price) {
-          $scope.selectedProductName = name;
-          $scope.selectedProductPrice = price;
+      $scope.details = function(productId) {
+        console.log(productId)
+        $http.get(apiUrl + '/product', {withCredentials: true})
+        .then(function(response){
+          $scope.selectedProduct = response.data;
           $scope.Modal = true;
+        })
       };
   
       $scope.closeModal = function() {
           $scope.Modal = false;
       };
+
+      $scope.logout = function() {
+        $http.get( apiUrl + ' ', {withCredentials: true})
+        .then(function(response){
+          console.log(response)
+
+          if(response.data == " "){
+            Swal.fire({
+                icon: 'success',
+                title: 'You are logged out',
+                confirmButtonText: 'ok'
+            })
+            .then(function(result) {
+              console.log(result)
+                if (result.isConfirmed) {
+                    console.log(result.isConfirmed)
+                    $scope.$apply(function(){
+                      $location.path('/login') 
+                    });
+                  }
+                });
+          }
+        })
+    };
+    
   }]);
   
 
-  myApp.controller('addController',function($scope){
+  myApp.controller('addController',['$scope','$http',function($scope,$http){
     $scope.groceries = [];
-  
+    
+    $http.get(apiUrl + '/', {withCredentials: true})
+    .then(function(response){
+      console.log(response)
+      $scope.groceries = response.data;
+    })
+    .catch(function(error){
+      console.log(error)
+    })
+
     $scope.addgrocery = function() {
       var newGrocery = {
         groceryName: "New grocery",
+        groceryPrice: "990"
       };
   
       $scope.groceries.push(newGrocery);
     };
-  })
-  
+  }]);
+ 
