@@ -55,47 +55,34 @@
       <button class="btn btn-outline-success  " type="submit">Search</button>
     </form>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <button class="btn btn-outline-success" ng-click="logout()">Logout</button>
-        <!-- <a class="btn btn-outline-success dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Filter
-        </a>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#">Price</a></li>
-          <li><a class="dropdown-item" href="#">Section</a></li>
-          <li><a class="dropdown-item" href="#">In Stock</a></li>
-        </ul> -->
       </div>
-
-      <div class="col-md-6">
-        <a ui-sref="add" class="link-dark"><i class="fa fa-shopping-cart" style="font-size:24px">cart</i></a>
+      <div class="col-md-4">
+        <button class="btn btn-outline-success" ng-click="filter()">Filter</button>
+      </div>
+        <div class="col-md-4">
+          <a ui-sref="add" class="link-dark"><i class="fa fa-shopping-cart" style="font-size:24px">cart</i></a>
       </div>
     </div>
   </div>
 </nav>
-<div class="row mt-3 ">
-<div class="col-md-1">
-
-</div>
-  <div class="col-md-10">
+<div class="row">
+  <div class="col-md-12">
     <div class="card">
       <div class="row">
-
-        <img src="images/gemma-stpjHJGqZyw-unsplash(2).jpg" class="img-fluid rounded mx-auto d-block img-thumbnail" alt="image">
+         <img src="images/gemma-stpjHJGqZyw-unsplash(2).jpg" class="img-fluid" alt="image">
+       </div>
       </div>
 
     </div>
   </div>
 </div>
 
-<div class="container mt-5">
-    <h3>Fruits</h3>
+<div class=" mt-5">
     <div class="d-grid">
       <div class="row justify-content-md-center bg-success-subtle shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-
-        
-        
-      <div class="col col-lg-3">
+      <!-- <div class="col col-lg-3">
         <div class="p-4">
             <div class="card">
               <div class="row">
@@ -138,20 +125,20 @@
             </div>
           </div>
         </div>
-      </div>
-      <!-- <div ng-repeat="product in products" class="col col-lg-3">
+      </div> -->
+      <div ng-repeat="product in products" class="col col-lg-3">
         <div class="p-4">
             <div class="card">
                 <div class="row">
-                    <img src="{{ product.image }}" class="card-img-top" alt="image">
+                    <img src="https://10.21.84.138:8000{{ product.image }}" class="card-img-top" alt="image">
                 </div>
                 <div class="card-body">
                     <h5 class="card-title text-center">{{ product.name }}</h5>
-                    <span>Rs. {{ product.price }}/kg</span>
+                    <p class="d-flex justify-content-center">Rs. {{ product.price }}/kg</p>
                     <div class="d-flex justify-content-center">
                         <div class="row">
                             <div class="col-md-6">
-                                <button class="btn btn-outline-success" ng-click="details($index)">Details</button>
+                                <button class="btn btn-outline-success" ng-click="details(product.id)">Details</button>
                             </div>
                             <div class="col-md-6">
                                 <button class="btn btn-outline-success" ng-click="add()">Buy</button>
@@ -161,7 +148,7 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
       
       <div class="modal" ng-class="{ 'show': Modal, 'd-block': Modal }">
         <div class="modal-dialog modal-xl">
@@ -173,6 +160,7 @@
                 <div class="modal-body">
                   <p>Name: {{ selectedProductName }}</p>
                   <p>Price: {{ selectedProductPrice }}</p>
+                  <p>Price: {{ selectedProductDescription }}</p>
                 </div>
                 <div class="modal-footer">
                   <button class="btn btn-outline-success" ng-click="closeModal()">Close</button>
@@ -180,7 +168,7 @@
               </div>
             </div>
     </div>
-    
+
   </div>
     </div>
     </div>
